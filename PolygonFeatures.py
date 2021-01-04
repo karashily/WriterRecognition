@@ -16,7 +16,7 @@ def dot(v1,v2):
 def vector(p1, p2):
     return np.array([p2[0] - p1[0], p2[1] - p1[1]])
 
-def PolygonFetures(image_name):
+def PolygonFeatures(image_name):
     image = cv2.imread(image_name) 
     cv2.waitKey(0) 
     
