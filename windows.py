@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import skimage
 import itertools
 import numpy as np
+from sklearn.cluster import AgglomerativeClustering
 
 def getWindows(img, windowL):
     _, thr = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
@@ -27,3 +28,17 @@ def plotImages(images):
         ax = fig.add_subplot(2, len(images)/2, idx+1, xticks=[], yticks=[])
         plt.imshow(images[idx], 'gray')
     plt.show()
+
+def getClusteredWindows(img, windowL, clustersNum):
+    windows = getWindows(img, windowL)
+    X = np.reshape(windows, [windows.shape[0], -1])
+    clustering = AgglomerativeClustering(n_clusters=clustersNum)
+    clusters = clustering.fit_predict(X)
+    clusteredWindows = np.zeros([clustersNum, windowL, windowL])
+    for i in range(clustersNum):
+        clusteredWindows[i] = windows[clusters==i][0]
+    return windows, clusters, clusteredWindows
+
+
+# sklearn.cluster.AgglomerativeClustering()
+
