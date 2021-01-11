@@ -2,6 +2,8 @@ import cv2
 import numpy as np 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from skimage import io 
+import time
 
 def angle_between(p1, p2):
     ang = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
@@ -17,27 +19,31 @@ def vector(p1, p2):
     return np.array([p2[0] - p1[0], p2[1] - p1[1]])
 
 def PolygonFeatures(image_name):
-    image = cv2.imread(image_name) 
-    cv2.waitKey(0) 
+    st = time.time()
+    image = io.imread(image_name) 
+    
     
     # Grayscale 
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
+    #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
     
     # Find Canny edges 
-    edged = cv2.Canny(gray, 30, 200) 
+    
+    edged = cv2.Canny(image, 30, 200) 
     
     # Finding Contours 
     # Use a copy of the image e.g. edged.copy() 
     # since findContours alters the image 
     contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
+    en = time.time()
+ 
     
-    print("Number of Contours found = " + str(len(contours))) 
+    #print("Number of Contours found = " + str(len(contours))) 
 
     # Draw all contours 
     # -1 signifies drawing all contours 
-    cv2.drawContours(image, contours, -1, (0, 255, 0), 3) 
-    cv2.imshow('Contours', image) 
-    cv2.waitKey(0) 
+    #cv2.drawContours(image, contours, -1, (0, 255, 0), 3) 
+    #cv2.imshow('Contours', image) 
+    st = time.time()
 
     dividand = 20
     buckets = 180//dividand
@@ -52,8 +58,11 @@ def PolygonFeatures(image_name):
     total_length2 = 0
     
     for i in range(len(contours)):
+        
         contours[i] = contours[i].squeeze()
-        print("contour: ",i + 1, contours[i].shape)
+        #print("contour: ",i + 1, contours[i].shape)
+        if(len(contours[i].shape)==1):
+            continue
         for j in range(1,contours[i].shape[0]):
             p1, p2 = contours[i][j-1], contours[i][j]
 
@@ -85,6 +94,7 @@ def PolygonFeatures(image_name):
 
     f11 /= total_length1
     f13 /= total_length2
+    en = time.time()
     f14, bin_edges = np.histogram(lengthes,buckets * 2,density = True)
-
+    
     return f10, f11, f12, f13, f14
