@@ -24,7 +24,7 @@ def vertHist(window):
     return proj
 
 
-def profiles(window):
+def profiles(windows):
     """
     Upper/lower profiles are computed by considering, for each image column, the distance between
     the horizontal line y=yt  and the closest pixel to the upper/lower boundary of the character image
@@ -34,10 +34,9 @@ def profiles(window):
     :param window: NxN codeword window [0-255]
     :return: Upper & Lower profiles
     """
-    window = window / 255
-    yt = np.sum(np.transpose((np.transpose(binImage) * np.arange(0, window.shape[0])))) / np.sum(window)
+    window = windows / 255
+    yt = np.sum(np.transpose((np.transpose(window) * np.arange(0, window.shape[0])))) / np.sum(window)
     yt = int(np.round(yt))
-
     up_profile = np.zeros(window.shape[0])
     low_profile = np.zeros(window.shape[0])
 
@@ -58,7 +57,12 @@ def profiles(window):
 
 
 def otherFeatures(window):
+    """
+    Calculates Orientation, Eccentricity, Rectangularity, Elongation, Perimeter, Solidity features
 
+    :param window: NxN codeword window [0-255]
+    :return: numpy array of 6 features
+    """
     features = np.zeros(6)
     contours, _ = cv2.findContours(window, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -89,50 +93,28 @@ def otherFeatures(window):
 
     # Calculating Perimeter:
     features[4] = cv2.arcLength(contours[0], True)
-    print(features[4])
 
+    # Calculating Solidity:
+    # Solidity -> It is the ratio of the contour area to the convex hull area
+    features[5] = cv2.contourArea(contours[0]) / cv2.contourArea(cv2.convexHull(contours[0]))
 
-def orientation(window, contours):
-    """
-    It computes the angle at which the object is directed
-
-    :param window: NxN codeword window
-    :param contours: contours of the writings in the window
-    :return:
-    """
-    center, axes, angle = cv2.fitEllipse(contours)
-    return angle
-
-
-def eccentricity(window):
-    pass
-
-
-def rectangularity(window):
-    pass
-
-
-def elongation(window):
-    pass
-
-
-def perimeter(window):
-    pass
-
-
-def solidity(window):
-    pass
+    return features
 
 
 def WindowFeatures(window):
 
-    window = np.zeros((13, 13))
     n = window.shape[0]
     features = np.zeros(4*n + 6)
 
-    # contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    features[:n] = horHist(window)
+    features[n: 2*n] = vertHist(window)
 
-    return 0
+    upper_profile, lower_profile = profiles(window)
+    features[2*n: 3*n] = upper_profile
+    features[3*n: 4*n] = lower_profile
+
+    features[4*n:] = otherFeatures(window)
+    return features
 
 
 if __name__ == "__main__":
@@ -149,5 +131,5 @@ if __name__ == "__main__":
     binImage[-2, :9] = 0
     binImage[-3, :9] = 0
     binImage[-4, :7] = 0
-    otherFeatures(binImage)
-    print(cv2.countNonZero(binImage))
+
+    print(WindowFeatures(binImage))
