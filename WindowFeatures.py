@@ -1,5 +1,6 @@
 import cv2 
 import numpy as np
+from sklearn.preprocessing import normalize as norm
 
 
 def horHist(window):
@@ -123,7 +124,10 @@ def WindowFeatures(window):
     features[3*n: 4*n] = lower_profile
 
     features[4*n:] = otherFeatures(window)
-    return features
+
+    normalized = norm(features[:, np.newaxis], axis=0).ravel()
+
+    return normalized
 
 
 if __name__ == "__main__":
