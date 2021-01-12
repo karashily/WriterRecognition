@@ -43,6 +43,15 @@ def profiles(windows):
     for colIdx, col in enumerate(np.transpose(window)):
 
         # Upper Profile:
+        fst_1 = np.argmax(col)
+        if fst_1 < yt and col[fst_1] > 0:
+            up_profile[colIdx] = yt - fst_1
+
+        # Lower Profile:
+        lst_1 = np.argmax(col[::-1])
+        if lst_1 < yt and col[fst_1] > 0:
+            low_profile[colIdx] = window.shape[1] - lst_1 - 1 - yt
+        """
         for idx in range(0, yt+1):
             if col[idx] > 0:
                 up_profile[colIdx] = yt - idx
@@ -52,7 +61,7 @@ def profiles(windows):
         for idx in range(yt, window.shape[1]):
             if col[idx] > 0:
                 low_profile[colIdx] = idx - yt
-
+        """
     return up_profile, low_profile
 
 
