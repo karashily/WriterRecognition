@@ -62,12 +62,34 @@ def otherFeatures(window):
     features = np.zeros(6)
     contours, _ = cv2.findContours(window, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    # If there is less than 5 points Orientation can't be calculated and it throws an exception.
+    # Calculating Orientation & Eccentricity from the fitting ellipse:
+    # Orientation -> it is the angle at which object is directed
+    # Eccentricity -> it is square root of (1 - (ratio between axes of the enclosing ellipse)^2)
+
+    # If there is less than 5 points Ellipse can't be created, therefore orientation and eccentricity cant be calculated
     try:
-        features[0] = orientation(window, contours[0])
+        center, axes, angle = cv2.fitEllipse(contours[0])
+        features[0] = angle
+        features[1] = np.sqrt(1-(min(axes)/max(axes))**2)
     except:
         features[0] = 0
+        features[1] = 0
 
+    # Calculating Rectangularity:
+    # Rectangularity -> ratio of the region area to the minimum bounding rectangle
+    rect = cv2.minAreaRect(contours[0])
+    features[2] = cv2.countNonZero(window) / (rect[1][0] * rect[1][1])
+
+    # Calculating Elongation:
+    # Elongation is calculated as stated in equation below
+    m = cv2.moments(window)
+    x = m['mu20'] + m['mu02']
+    y = 4 * m['mu11'] ** 2 + (m['mu20'] - m['mu02']) ** 2
+    features[3] = (x + y ** 0.5) / (x - y ** 0.5)
+
+    # Calculating Perimeter:
+    features[4] = cv2.arcLength(contours[0], True)
+    print(features[4])
 
 
 def orientation(window, contours):
@@ -124,5 +146,8 @@ if __name__ == "__main__":
 
     binImage[-1] = np.zeros(13)
     binImage[-1, 12] = 255
+    binImage[-2, :9] = 0
+    binImage[-3, :9] = 0
+    binImage[-4, :7] = 0
     otherFeatures(binImage)
-    print(binImage)
+    print(cv2.countNonZero(binImage))
