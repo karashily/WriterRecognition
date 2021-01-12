@@ -56,7 +56,7 @@ def PolygonFeatures(image_name):
     
     for i in range(len(contours)):
         contours[i] = contours[i].squeeze()
-        if(len(contours[i].shape)==1 or contours[i].shape[0] < 2):
+        if(len(contours[i].shape)==1 or contours[i].shape[0] < 3):
             continue
             
         p1, p2 = contours[i][:-1], contours[i][1:]  #points
