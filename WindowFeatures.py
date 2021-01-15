@@ -111,8 +111,13 @@ def otherFeatures(window):
     return features
 
 
-def WindowFeatures(window):
+def WindowFeatures(window_):
+    
+    image = cv2.cvtColor(window_, cv2.COLOR_BGR2GRAY)
+    _, binImage = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
+    window = 255 - binImage
+    
     n = window.shape[0]
     features = np.zeros(4*n + 6)
 
