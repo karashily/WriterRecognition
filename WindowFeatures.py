@@ -91,24 +91,36 @@ def otherFeatures(window):
 
     # Calculating Rectangularity:
     # Rectangularity -> ratio of the region area to the minimum bounding rectangle
-    rect = cv2.minAreaRect(contours[0])
-    print(rect)
-    features[2] = cv2.countNonZero(window) / (rect[1][0] * rect[1][1])
+    try:
+        rect = cv2.minAreaRect(contours[0])
+    # print(rect)
+        features[2] = cv2.countNonZero(window) / (rect[1][0] * rect[1][1])
+    except:
+        features[2] = 0
 
     # Calculating Elongation:
     # Elongation is calculated as stated in equation below
-    m = cv2.moments(window)
-    x = m['mu20'] + m['mu02']
-    y = 4 * m['mu11'] ** 2 + (m['mu20'] - m['mu02']) ** 2
-    features[3] = (x + y ** 0.5) / (x - y ** 0.5)
-
+    try:
+        m = cv2.moments(window)
+        x = m['mu20'] + m['mu02']
+        y = 4 * m['mu11'] ** 2 + (m['mu20'] - m['mu02']) ** 2
+        features[3] = (x + y ** 0.5) / (x - y ** 0.5)
+    except:
+        features[3] = 0
+        
     # Calculating Perimeter:
-    features[4] = cv2.arcLength(contours[0], True)
-
+    try:
+        features[4] = cv2.arcLength(contours[0], True)
+    except:
+        features[4] = 0
+        
     # Calculating Solidity:
     # Solidity -> It is the ratio of the contour area to the convex hull area
-    features[5] = cv2.contourArea(contours[0]) / cv2.contourArea(cv2.convexHull(contours[0]))
-
+    try:
+        features[5] = cv2.contourArea(contours[0]) / cv2.contourArea(cv2.convexHull(contours[0]))
+    except:
+        features[5] = 0
+    
     return features
 
 
