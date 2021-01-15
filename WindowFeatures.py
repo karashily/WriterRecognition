@@ -92,6 +92,7 @@ def otherFeatures(window):
     # Calculating Rectangularity:
     # Rectangularity -> ratio of the region area to the minimum bounding rectangle
     rect = cv2.minAreaRect(contours[0])
+    print(rect)
     features[2] = cv2.countNonZero(window) / (rect[1][0] * rect[1][1])
 
     # Calculating Elongation:
@@ -113,8 +114,8 @@ def otherFeatures(window):
 
 def WindowFeatures(window_):
     
-    image = cv2.cvtColor(window_, cv2.COLOR_BGR2GRAY)
-    _, binImage = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    #image = cv2.cvtColor(window_, cv2.COLOR_BGR2GRAY)
+    _, binImage = cv2.threshold(window_, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     window = 255 - binImage
     
