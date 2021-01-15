@@ -19,21 +19,21 @@ def dot(v1,v2):
 def vector(p1, p2):
     return p2 - p1
 
-def PolygonFeatures(image_name):    
+def PolygonFeatures(contours):    
     
-    image = cv2.imread(image_name) 
+    #image = cv2.imread(image_name) 
     
     # Grayscale 
     #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
     
     # Find Canny edges 
     
-    edged = cv2.Canny(image, 30, 200) 
+    #edged = cv2.Canny(image, 30, 200) 
     
     # Finding Contours 
     # Use a copy of the image e.g. edged.copy() 
     # since findContours alters the image 
-    contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
+    #contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
     
     #print("Number of Contours found = " + str(len(contours))) 
 
