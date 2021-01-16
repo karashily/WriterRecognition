@@ -20,6 +20,17 @@ def getWindows(img, windowL):
     outputWindows = np.array(outputWindows)
     return outputWindows
 
+def getWindows2(img, windowL):
+    _, thr = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
+
+    thrWindows = skimage.util.shape.view_as_windows(thr, (windowL, windowL), (windowL, windowL)) \
+                        .reshape([-1, windowL*windowL])
+    imgWindows = skimage.util.shape.view_as_windows(img, (windowL, windowL), (windowL, windowL)) \
+                        .reshape([-1, windowL, windowL])
+    thrWindowsSum = np.sum(thrWindows, axis=1)
+    outputWindows = imgWindows[thrWindowsSum!=255*13*13]
+    return outputWindows
+
 def plotImages(images):
     '''plot the images in the batch'''
     fig = plt.figure(figsize=(25, 5))
@@ -31,6 +42,17 @@ def plotImages(images):
 
 def getClusteredWindows(img, windowL, clustersNum):
     windows = getWindows(img, windowL)
+    X = np.reshape(windows, [windows.shape[0], -1])
+    clustering = AgglomerativeClustering(n_clusters=clustersNum)
+    clusters = clustering.fit_predict(X)
+    clusteredWindows = np.zeros([clustersNum, windowL, windowL])
+    for i in range(clustersNum):
+        clusteredWindows[i] = windows[clusters==i][0]
+    return windows, clusters, clusteredWindows
+
+
+def getClusteredWindows2(img, windowL, clustersNum):
+    windows = getWindows2(img, windowL)
     X = np.reshape(windows, [windows.shape[0], -1])
     clustering = AgglomerativeClustering(n_clusters=clustersNum)
     clusters = clustering.fit_predict(X)

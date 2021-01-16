@@ -1,1 +1,4 @@
 *.pyc
+forms/
+train/
+.ipynb_checkpoints/
