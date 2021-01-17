@@ -142,9 +142,14 @@ def WindowFeatures(window_):
     features[3*n: 4*n] = lower_profile
 
     features[4*n:] = otherFeatures(window)
-
-    normalized = norm(features[:, np.newaxis], axis=0).ravel()
-
+    
+    if np.sum(features) != 0:
+        normalized = norm(features[:, np.newaxis], axis=0).ravel()
+    else:
+        print("All WindowFeatures are zeros for the window")
+        print(window)
+        normalized = features
+       
     return normalized
 
 
