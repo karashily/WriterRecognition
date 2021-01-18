@@ -20,29 +20,7 @@ def vector(p1, p2):
     return p2 - p1
 
 def PolygonFeatures(contours):    
-    
-    #image = cv2.imread(image_name) 
-    
-    # Grayscale 
-    #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
-    
-    # Find Canny edges 
-    
-    #edged = cv2.Canny(image, 30, 200) 
-    
-    # Finding Contours 
-    # Use a copy of the image e.g. edged.copy() 
-    # since findContours alters the image 
-    #contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
-    
-    #print("Number of Contours found = " + str(len(contours))) 
-
-    # Draw all contours 
-    # -1 signifies drawing all contours 
-    #cv2.drawContours(image, contours, -1, (0, 255, 0), 3) 
-    #cv2.imshow('Contours', image) 
-    
-    dividand = 20
+    dividand = 10
     buckets = 180//dividand
 
     f10 = np.zeros(buckets)
@@ -51,6 +29,8 @@ def PolygonFeatures(contours):
     f13 = np.zeros(buckets)
     lengths = []
 
+    total_segments = 0
+    total_pairs = 0
     total_length1 = 0
     total_length2 = 0
     
@@ -62,6 +42,7 @@ def PolygonFeatures(contours):
         p1, p2 = contours[i][:-1], contours[i][1:]  #points
         
         #f10, f11, f14
+        total_segments += p1.shape[0]
         slopes = angle_between(p1, p2)              #slope of lines
         segmentsLength = length(p1, p2)             #length of lines
         largerThan180 = slopes > 180                #positions of slopes > 180
@@ -81,6 +62,7 @@ def PolygonFeatures(contours):
         vectors = vector(p1, p2)                                        #generate all vectors
         vectorsLengths = vectorLength(vectors)                          #get length of all vectors
         v1, v2 = vectors[:-1], vectors[1:]                              #line up vectors for a vectorized code
+        total_pairs += v1.shape[0]
         len1, len2 = vectorsLengths[:-1], vectorsLengths[1:]            #line up lengthes for a vectorized code
         nominator = np.sum(v1 * v2, axis = 1)                           #apply dot product between each corresponding vectors
         denominator = len1 * len2                                       #apply length multiplication between each corresponding vectors
@@ -94,7 +76,9 @@ def PolygonFeatures(contours):
             f13[Buckets[i]] += len1[i] + len2[i]
             total_length2 += len1[i] + len2[i]
             
+    f10 /= total_segments
     f11 /= total_length1
+    f12 /= total_pairs
     f13 /= total_length2
     f14, bin_edges = np.histogram(lengths,buckets * 2,density = True)
     
