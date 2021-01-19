@@ -49,7 +49,7 @@ def cutHandWriting(img):
             return img
 
 
-    extracted_img = img[peaks[-2]:peaks[-1]]
+    extracted_img = img[peaks[-2]:]
     
 
     return extracted_img
