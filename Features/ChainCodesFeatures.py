@@ -49,7 +49,7 @@ def Chain_Codes_Counting_VEC(contours,pairs_triplets=True,second_order=False):
         for  i in range(8):
             for j in range(8):
                 check = str(i)+str(j)
-                f4[i*8+j] = pairs_tri.count(check)
+                #f4[i*8+j] = pairs_tri.count(check)
                 for k in range(8):
                     check = str(i)+str(j)+str(k)
                     f5[i*64+j*8+k] = pairs_tri.count(check)
@@ -69,8 +69,8 @@ def Chain_Codes_Counting_VEC(contours,pairs_triplets=True,second_order=False):
             f3 = f3/np.sum(f3)
     
     if pairs_triplets:
-        if(np.sum(f4)!=0):
-            f4 = f4/f4.sum()
+        #if(np.sum(f4)!=0):
+         #   f4 = f4/f4.sum()
         if(np.sum(f5)!=0):
             f5 = f5/f5.sum()
         return f5

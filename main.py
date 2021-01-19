@@ -6,12 +6,13 @@ import os
 from sklearn.svm import SVC
 from Features.FeatureExtractor import *
 
-test_cases = os.listdir("data")
+test_cases = os.listdir("TestData")
 test_cases.sort()
 
 time_file = open("time.txt", "w")
 results_file = open("results.txt", "w")
 for case in test_cases:
+    
     writer1_1  = cv2.imread('TestData/'+case+"/1/1.png", cv2.IMREAD_GRAYSCALE)
     writer1_2  = cv2.imread('TestData/'+case+"/1/2.png", cv2.IMREAD_GRAYSCALE)
     writer2_1  = cv2.imread('TestData/'+case+"/2/1.png", cv2.IMREAD_GRAYSCALE)
@@ -19,6 +20,7 @@ for case in test_cases:
     writer3_1  = cv2.imread('TestData/'+case+"/3/1.png", cv2.IMREAD_GRAYSCALE)
     writer3_2  = cv2.imread('TestData/'+case+"/3/2.png", cv2.IMREAD_GRAYSCALE)
     test_img =  cv2.imread('TestData/'+case+"/test.png", cv2.IMREAD_GRAYSCALE)
+    print("Processing Test Case : " , case)
 
     st = time.time()
   
