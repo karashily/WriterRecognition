@@ -7,5 +7,7 @@ and our Trials in our documentation pdf file in the repo.
 1- install Python 3.7<br /> 
 2- Clone the repo<br /> 
 3- install requirements in the requirements.txt<br /> 
-4- add your test case in folder "data" in the same way it contains 2 test cases<br /> 
+4- add your test case in folder "data" in the same way in the next section<br /> 
 5-run main.py <br /> 
+### Data Format 
+![image](https://github.com/karashily/WriterRecognition/blob/master/data.png)
