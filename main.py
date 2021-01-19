@@ -6,7 +6,7 @@ import os
 from sklearn.svm import SVC
 from Features.FeatureExtractor import *
 
-test_cases = os.listdir("TestData")
+test_cases = os.listdir("data")
 test_cases.sort()
 
 time_file = open("time.txt", "w")
